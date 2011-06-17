@@ -14,7 +14,7 @@ Summary: Snort Log Backend
 Version: %{version}
 Release: %mkrel 1
 License: GPL
-Group: Applications/Internet
+Group: Monitoring
 Source1: %{realname}.config
 Source2: %{realname}.init
 Source: http://www.securixlive.com/download/%{realname}/%{realname}-%{version}.tar.gz
