@@ -19,6 +19,7 @@ Source1: %{realname}.config
 Source2: %{realname}.init
 Source: http://www.securixlive.com/download/%{realname}/%{realname}-%{version}.tar.gz
 Url: http://www.securixlive.com/barnyard2/
+BuildRequires: libpcap-devel, libpcap1
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 
