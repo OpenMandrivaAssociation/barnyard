@@ -6,21 +6,18 @@
 %{?_with_postgresql:%define postgresql 1}
 
 %define realname barnyard2
-%define name barnyard
-%define version 1.9
 
-Name: %{name}
-Summary: Snort Log Backend 
-Version: %{version}
-Release: %mkrel 1
-License: GPL
-Group: Monitoring
-Source1: %{realname}.config
-Source2: %{realname}.init
-Source: http://www.securixlive.com/download/%{realname}/%{realname}-%{version}.tar.gz
-Url: http://www.securixlive.com/barnyard2/
-BuildRequires: libpcap-devel, libpcap
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Name:		barnyard
+Summary:	Snort Log Backend 
+Version:	1.9
+Release:	2
+License:	GPL
+Group:		Monitoring
+Url:		http://www.securixlive.com/barnyard2/
+Source0:	http://www.securixlive.com/download/%{realname}/%{realname}-%{version}.tar.gz
+Source1:	%{realname}.config
+Source2:	%{realname}.init
+BuildRequires:	pcap-devel
 
 
 %description
@@ -36,24 +33,26 @@ the last entry as listed in the waldo file.
 
 
 %package mysql
-Summary: barnyard2 with MySQL support
-Group: Applications/Internet
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Summary:	barnyard2 with MySQL support
+Group:		Applications/Internet
+Requires:	%{name} = %{version}-%{release}
 %if %{mysql}
-Requires: mysql
-BuildRequires: mysql-devel
+Requires:	mysql
+BuildRequires:	mysql-devel
 %endif
+
 %description mysql
 barnyard2 binary compiled with mysql support.
 
 %package postgresql
-Summary: barnyard2 with PostgreSQL support
-Group: Applications/Internet
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Summary:	barnyard2 with PostgreSQL support
+Group:		Applications/Internet
+Requires:	%{name} = %{version}-%{release}
 %if %{postgresql}
-Requires: postgresql
-BuildRequires: postgresql-devel
+Requires:	postgresql
+BuildRequires:	postgresql-devel
 %endif
+
 %description postgresql
 barnyard2 binary compiled with postgresql support.
 
@@ -61,7 +60,9 @@ barnyard2 binary compiled with postgresql support.
 %setup -q -n %{realname}-%{version}
 
 %build
-./configure --sysconfdir=%{_sysconfdir}/snort \
+./configure \
+	--prefix=%{_prefix} \
+	--sysconfdir=%{_sysconfdir}/snort \
    %if %{postgresql}
 	--with-postgresql \
    %endif
@@ -70,22 +71,17 @@ barnyard2 binary compiled with postgresql support.
    %endif
 
 %install
-%makeinstall 
+%makeinstall_std
 
-%{__install} -d -p $RPM_BUILD_ROOT%{_sysconfdir}/{sysconfig,rc.d/init.d,snort} 
-%{__install} -d -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/contrib
-%{__install} -d -p $RPM_BUILD_ROOT%{_mandir}/man8
-%{__install} -d -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/doc
-mv etc/barnyard2.conf $RPM_BUILD_ROOT%{_sysconfdir}/snort
-%{__install} -m 644 $RPM_SOURCE_DIR/barnyard2.config $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/barnyard2
-%{__install} -m 755 $RPM_SOURCE_DIR/barnyard2.init $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/barnyard2
+install -d -p %{buildroot}%{_sysconfdir}/{sysconfig,rc.d/init.d,snort} 
+install -d -p %{buildroot}%{_docdir}/%{name}-%{version}/contrib
+install -d -p %{buildroot}%{_mandir}/man8
+install -d -p %{buildroot}%{_docdir}/%{name}-%{version}/doc
+mv etc/barnyard2.conf %{buildroot}%{_sysconfdir}/snort
+install -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/sysconfig/barnyard2
+install -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/rc.d/init.d/barnyard2
 
-rm $RPM_BUILD_ROOT%{_sysconfdir}/barnyard2.conf
-rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/
-%clean
-if [ -d $RPM_BUILD_ROOT ] && [ "$RPM_BUILD_ROOT" != "/"  ] ; then
-	rm -rf $RPM_BUILD_ROOT
-fi
+rm -rf %{buildroot}%{_datadir}/doc/
 
 %post
 %_post_service barnyard2
@@ -95,13 +91,9 @@ fi
 
 
 %files
-%defattr(-,root,root)
 %doc LICENSE
 %attr(755,root,root) %{_bindir}/barnyard2
 %attr(640,root,root) %config %{_sysconfdir}/snort/barnyard2.conf
 %attr(755,root,root) %config %{_sysconfdir}/rc.d/init.d/barnyard2
 %attr(644,root,root) %config %{_sysconfdir}/sysconfig/barnyard2
 
-%changelog
-* Sat Jan 16 2009 Ian Firns <firnsy@securixlive.com>
-- barnyard2-1.8-beta2
