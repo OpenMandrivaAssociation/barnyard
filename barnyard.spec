@@ -10,7 +10,7 @@
 Name:		barnyard
 Summary:	Snort Log Backend 
 Version:	1.9
-Release:	2
+Release:	3
 License:	GPL
 Group:		Monitoring
 Url:		http://www.securixlive.com/barnyard2/
