@@ -13,7 +13,7 @@ Version:	1.9
 Release:	3
 License:	GPL
 Group:		Monitoring
-Url:		http://www.securixlive.com/barnyard2/
+Url:		https://www.securixlive.com/barnyard2/
 Source0:	http://www.securixlive.com/download/%{realname}/%{realname}-%{version}.tar.gz
 Source1:	%{realname}.config
 Source2:	%{realname}.init
